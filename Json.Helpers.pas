@@ -15,6 +15,7 @@ type
     procedure SetValue(const APath: string; const AValue: Integer); overload;
     procedure SetValue(const APath: string; const AValue: Boolean); overload;
     procedure SetValue(const APath: string; const AValue: Double); overload;
+    procedure SetValue(const APath: string; const AValue: Currency); overload;
     procedure SetValue(const APath: string; const AValue: Extended); overload;
     procedure SetValue(const APath: string; const AValue: Variant); overload;
     procedure SetValue(const APath: string; const AValue: TTime); overload;
@@ -27,6 +28,7 @@ type
     function AsString(const APath: string; const ADefault: string = ''): string;
     function AsJson(const APath: string; const ADefault: string = JSON_NULL): string;
     function AsDouble(const APath: string; const ADefault: Double = 0): Double;
+    function AsCurrency(const APath: string; const ADefault: Currency = 0): Currency;
     function AsExtended(const APath: string; const ADefault: Extended = 0): Extended;
     function AsInteger(const APath: string; const ADefault: Integer = 0): Integer;
     function AsBoolean(const APath: string; const ADefault: Boolean = False): Boolean;
@@ -101,6 +103,11 @@ end;
 procedure TJSONObjectHelper.SetValue(const APath: string; const AValue: TDateTime);
 begin
   SetValue(APath, TJSONString.Create(FormatDateTime('yyyy-MM-dd hh:mm:ss', AValue)));
+end;
+
+procedure TJSONObjectHelper.SetValue(const APath: string; const AValue: Currency);
+begin
+  SetValue(APath, TJSONNumber.Create(AValue));
 end;
 
 procedure TJSONObjectHelper.SetValue(const APath: string; const AValue: Variant);
@@ -267,6 +274,21 @@ begin
         LMillisecond := 0;
         Result := EncodeDateTime(LYear, LMonth, LDay, LHour, LMinute, LSecond, LMillisecond);
       end
+    except
+    end;
+end;
+
+function TJSONObjectHelper.AsCurrency(const APath: string; const ADefault: Currency): Currency;
+var
+  LJSONValue: TJSONValue;
+begin
+  Result := ADefault;
+  if Exists(APath, LJSONValue) then
+    try
+      if LJSONValue is TJSONNull then
+        Result := ADefault
+      else
+        Result := GetValue<Currency>(APath);
     except
     end;
 end;
