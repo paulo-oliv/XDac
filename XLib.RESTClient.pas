@@ -3,7 +3,7 @@ unit XLib.RESTClient;
 interface
 
 uses
-  Json.Interfaces,
+  XLib.Json.Interfaces,
   REST.Client,
   REST.Authenticator.OAuth,
   Rest.Types;
@@ -33,6 +33,10 @@ type
     function addBody(const AJsonObject: IJsonObject): RestClient; overload;
     function addBody(const AJsonArray: IJsonArray): RestClient; overload;
     function addBody(const AJsonArrayObject: IJsonArrayObject<IJsonObject>): RestClient; overload;
+
+    function addParam(const AJsonObject: IJsonObject): RestClient; overload;
+    function addParam(const AJsonArray: IJsonArray): RestClient; overload;
+    function addParam(const AJsonArrayObject: IJsonArrayObject<IJsonObject>): RestClient; overload;
 
     function disconnect: RestClient;
 
@@ -102,7 +106,7 @@ implementation
 uses
   System.SysUtils,
   System.Json,
-  Json.Classes,
+  XLib.Json.Classes,
   XLib.RESTClient.Exceptions;
 
 { TInterfacedRest }
